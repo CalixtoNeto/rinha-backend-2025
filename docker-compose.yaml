@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: rinha
+
+  redis:
+    image: redis:7.0
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  app:
+    build: .
+    container_name: rinha-backend-2025
+    ports:
+      - "9999:9999"
+    depends_on:
+      - mongodb
+      - redis
+    # não precisa declarar variáveis de Mongo/Redis se seu application.yml interno
+    # já aponta para "mongodb:27017" e "redis:6379"
+
+volumes:
+  mongodb_data:
+  redis_data:
