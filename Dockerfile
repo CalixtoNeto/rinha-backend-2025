@@ -1,16 +1,15 @@
 FROM eclipse-temurin:21-jdk-jammy AS build
 WORKDIR /app
 
-# Instala Maven
-RUN apt-get update && \
-    apt-get install -y maven && \
-    rm -rf /var/lib/apt/lists/*
-
+# Copia wrapper, pom e código
+COPY .mvn .mvn
+COPY mvnw .
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
 COPY src ./src
-RUN mvn clean package -DskipTests -B
+
+# Dá permissão e roda o wrapper
+RUN chmod +x mvnw && \
+    ./mvnw clean generate-sources install -DskipTests -B
 
 FROM eclipse-temurin:21-jdk-jammy
 WORKDIR /app

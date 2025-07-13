@@ -54,7 +54,9 @@ O código-fonte está disponível em: [https://github.com/calixtoneto/rinha-back
 3. **Construa e Inicie o Backend**:
    - Execute o comando único para compilar, construir a imagem Docker e iniciar os containers:
      ```bash
-     mvn clean generate-sources install -DskipTests && docker build -t calixtoneto/rinha-backend-2025:latest . && docker-compose up -d
+     docker build -t calixtoneto/rinha-backend-2025:latest . && \
+     docker-compose up -d
+     
      ```
 
 4. **Verifique os Containers**:
