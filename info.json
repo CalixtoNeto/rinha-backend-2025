@@ -1,0 +1,10 @@
+{
+    "name": "Calixtoneto",
+    "social": ["https://x.com/calixtoneto"],
+    "source-code-repo": "https://github.com/calixtoneto/rinha-backend-2025",
+    "langs": ["java"],
+    "storages": ["postgresql", "redis"],
+    "messaging": [],
+    "load-balancers": ["nginx"],
+    "other-technologies": ["resilience4j", "modelmapper"]
+}

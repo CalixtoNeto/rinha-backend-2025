@@ -1,0 +1,121 @@
+openapi: 3.0.3
+info:
+  title: Rinha de Backend 2025 API
+  version: 1.0.0
+  description: |
+    Backend que intermedia pagamentos e fornece um resumo dos processados.
+tags:
+  - name: payment
+    description: Operações de pagamento
+
+paths:
+  /payments:
+    post:
+      tags:
+        - payment
+      operationId: createPayment
+      summary: Intermediar um pagamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+      responses:
+        '2XX':
+          description: Pagamento aceito (qualquer 2xx)
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '400':
+          description: Requisição inválida
+        '500':
+          description: Erro interno no servidor
+
+    get:
+      tags:
+        - payment
+      operationId: getPaymentsSummary
+      summary: Obter resumo dos pagamentos processados
+      parameters:
+        - name: from
+          in: query
+          description: Timestamp UTC inicial (opcional)
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: Timestamp UTC final (opcional)
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Resumo dos pagamentos processados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentsSummaryResponse'
+        '400':
+          description: Parâmetros inválidos
+        '500':
+          description: Erro interno no servidor
+
+components:
+  schemas:
+    PaymentRequest:
+      type: object
+      required:
+        - correlationId
+        - amount
+      properties:
+        correlationId:
+          type: string
+          format: uuid
+          description: Identificador único de correlação
+        amount:
+          type: number
+          format: double
+          description: Valor do pagamento
+
+    DefaultSummary:
+      type: object
+      required:
+        - totalRequests
+        - totalAmount
+      properties:
+        totalRequests:
+          type: integer
+          description: Total de requisições processadas pelo processor “default”
+        totalAmount:
+          type: number
+          format: double
+          description: Soma dos valores processados pelo processor “default”
+
+    FallbackSummary:
+      type: object
+      required:
+        - totalRequests
+        - totalAmount
+      properties:
+        totalRequests:
+          type: integer
+          description: Total de requisições processadas pelo processor “fallback”
+        totalAmount:
+          type: number
+          format: double
+          description: Soma dos valores processados pelo processor “fallback”
+
+    PaymentsSummaryResponse:
+      type: object
+      required:
+        - default
+        - fallback
+      properties:
+        default:
+          $ref: '#/components/schemas/DefaultSummary'
+        fallback:
+          $ref: '#/components/schemas/FallbackSummary'
